@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+// useEffect(function) called inside a component to run code in a controlled way
+// and not constantly re-call it
 import './App.css';
 
 const schedule = {
@@ -56,11 +58,29 @@ const CourseList = ({ courses }) => (
   </div>
 );
 
-const App = () => (
+const App = () => {
+  const [schedule, setSchedule] = useState();
+  const url = 'https://courses.cs.northwestern.edu/394/data/cs-courses.php';
+
+  useEffect(() => {
+    const fetchSchedule = async () => {
+      const response = await fetch(url);
+      if (!response.ok) throw response;
+      const json = await response.json();
+      setSchedule(json);
+    }
+    fetchSchedule();
+  }, []) // second argument: variables that determine when this updates
+  // if these state variables change, this is run
+  // if there is no argument, it runs on all updates
+  // if there is an empty list argument, it runs when component first added
+
+  if (!schedule) return <h1>Loading schedule...</h1>;
+  return (
   <div className="container">
     <Banner title={ schedule.title } />
     <CourseList courses={ schedule.courses } />
-  </div>
-);
+  </div>);
+};
 
 export default App;

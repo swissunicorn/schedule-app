@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import CourseList from './components/CourseList';
 import { useData } from './utilities/firebase.js';
+import { timeParts } from './components/Course';
 
 const schedule = {
   "title": "CS Courses for 2018-2019",
@@ -29,20 +30,6 @@ const schedule = {
       "title" : "Tech & Human Interaction"
     }
   }
-};
-
-// what the fuck
-const meetsPat = /^ *((?:M|Tu|W|Th|F)+) +(\d\d?):(\d\d) *[ -] *(\d\d?):(\d\d) *$/;
-
-const timeParts = meets => {
-  const [match, days, hh1, mm1, hh2, mm2] = meetsPat.exec(meets) || [];
-  return !match ? {} : {
-    days,
-    hours: {
-      start: hh1 * 60 + mm1 * 1,
-      end: hh2 * 60 + mm2 * 1
-    }
-  };
 };
 
 const mapValues = (fn, obj) => (

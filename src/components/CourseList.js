@@ -23,11 +23,19 @@ const TermSelector = ({term, setTerm}) => (
     </div>
   );
 
+  const scheduleChanged = (selected, courses) => (
+    selected.some(course => course !== courses[course.id])
+  );
+
 const CourseList = ({ courses }) => { // <> is a way to return two components without making a div
     const [term, setTerm] = useState('Fall');
     const [selected, setSelected] = useState([]);
     const termCourses = Object.values(courses).filter(course => term === getCourseTerm(course));
-  
+
+    if (scheduleChanged(selected, courses)) { // if times changed, reset selected courses
+      setSelected([])
+    };
+
     return (
       <> 
         <TermSelector term={term} setTerm={setTerm}/>

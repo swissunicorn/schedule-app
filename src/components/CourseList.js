@@ -1,27 +1,48 @@
 import { useState } from 'react';
 import { terms, getCourseTerm } from '../utilities/times.js';
 import Course from './Course.js';
+import { signInWithGoogle, signOut, useUserState } from '../utilities/firebase.js';
 
 // what is htmlFor
 const TermButton = ({term, setTerm, checked}) => (
     <>
-      <input type="radio" id={term} className="btn-check" checked={checked} autoComplete="off"
+      <input type="radio" id={term}
+        className="btn-check" checked={checked} autoComplete="off"
         onChange={() => setTerm(term)} />
       <label class="btn btn-success m-1 p-2" htmlFor={term}>
         { term }  
       </label>
     </>
-  )
+)
 
-const TermSelector = ({term, setTerm}) => (
-    <div className = "btn-group">
-      {
-        Object.values(terms).map(value => (
-          <TermButton key={value} term={value} setTerm={setTerm} checked={value === term} />
-        ))
-      }  
+const SignInButton = () => (
+  <button className="btn btn-secondary btn-sm"
+      onClick={() => signInWithGoogle()}>
+    Sign In
+  </button>
+);
+
+const SignOutButton = () => (
+  <button className="btn btn-secondary btn-sm"
+      onClick={() => signOut()}>
+    Sign Out      
+  </button>
+)
+
+const TermSelector = ({term, setTerm}) => {
+  const [user] = useUserState();
+  return (<div className="btn-toolbar justify-content-between">
+      <div className = "btn-group">
+        {
+          Object.values(terms).map(value => (
+            <TermButton key={value} term={value} setTerm={setTerm} checked={value === term} />
+          ))
+        }  
+      </div>
+      { user ? <SignOutButton /> : <SignInButton /> }
     </div>
-  );
+    );
+};
 
   const scheduleChanged = (selected, courses) => (
     selected.some(course => course !== courses[course.id])
